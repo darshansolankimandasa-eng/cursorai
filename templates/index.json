@@ -60,6 +60,7 @@
     },
     "featured_collection": {
       "type": "featured-collection",
+      "disabled": true,
       "settings": {
         "title": "<strong>Featured products</strong>",
         "heading_size": "h1",
