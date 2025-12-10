@@ -300,6 +300,109 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
+    <style>
+      .giftcard-section {
+  padding: 30px;
+  background: #f8f9fb;
+  border-radius: 15px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.giftcard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.giftcard-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.giftcard-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transform: translateY(-3px);
+}
+
+.giftcard-number {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.giftcard-card p {
+  margin: 6px 0;
+  color: #555;
+}
+
+.giftcard-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  background: #008060;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.giftcard-btn:hover {
+  background: #006a50;
+}
+
+    </style>
+<section class="giftcard-section">
+  <h2 class="section-title">Your Gift Cards</h2>
+
+  <div class="giftcard-grid">
+
+    <div class="giftcard-card">
+      <h3 class="giftcard-number">•••• •••• •••• 1212</h3>
+      <p><b>Balance:</b> 10.0 USD</p>
+      <p><b>ID:</b> gid://shopify/GiftCard/507505344666</p>
+      <button class="giftcard-btn" onclick="sendGiftCardNotification('gid://shopify/GiftCard/507505344666', this)">
+        Send Notification
+      </button>
+    </div>
+
+    <div class="giftcard-card">
+      <h3 class="giftcard-number">•••• •••• •••• 66kq</h3>
+      <p><b>Balance:</b> 10.0 USD</p>
+      <p><b>ID:</b> gid://shopify/GiftCard/507505574042</p>
+      <button class="giftcard-btn" onclick="sendGiftCardNotification('gid://shopify/GiftCard/507505574042', this)">
+        Send Notification
+      </button>
+    </div>
+
+    <div class="giftcard-card">
+      <h3 class="giftcard-number">•••• •••• •••• 1313</h3>
+      <p><b>Balance:</b> 0.0 USD</p>
+      <p><b>ID:</b> gid://shopify/GiftCard/507505606810</p>
+      <button class="giftcard-btn" onclick="sendGiftCardNotification('gid://shopify/GiftCard/507505606810', this)">
+        Send Notification
+      </button>
+    </div>
+
+  </div>
+</section>
+
 
 
     {% comment %} <script>
@@ -350,13 +453,13 @@ getGiftCardsByCustomer("8631840014490");
 
     </script> {% endcomment %}
 
-    <div id="giftCardGrid"></div>
+    {% comment %} <div id="giftCardGrid"></div> {% endcomment %}
 
 <script>
 /* -----------------------------
     1. GET GIFT CARDS BY CUSTOMER
 -------------------------------- */
-async function getGiftCardsByCustomer(customerId) {
+{% comment %} async function getGiftCardsByCustomer(customerId) {
   const query = `
     query GiftCardsByCustomer {
       giftCards(first: 10, query: "customer_id:${customerId} status:enabled") {
@@ -510,7 +613,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const giftCards = result?.data?.body?.data?.giftCards?.edges || [];
   renderGiftCards(giftCards);
 });
-</script>
+</script> {% endcomment %}
 
 
 
