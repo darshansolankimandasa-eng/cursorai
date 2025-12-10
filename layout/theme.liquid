@@ -302,7 +302,7 @@
 
 
 
-    <script>
+    {% comment %} <script>
       async function getGiftCardsByCustomer(customerId) {
         const query = `
           query GiftCardsByCustomer {
@@ -348,7 +348,170 @@
 // Example usage:
 getGiftCardsByCustomer("8631840014490");
 
-    </script>
+    </script> {% endcomment %}
+
+    <div id="giftCardGrid"></div>
+
+<script>
+/* -----------------------------
+    1. GET GIFT CARDS BY CUSTOMER
+-------------------------------- */
+async function getGiftCardsByCustomer(customerId) {
+  const query = `
+    query GiftCardsByCustomer {
+      giftCards(first: 10, query: "customer_id:${customerId} status:enabled") {
+        edges {
+          node {
+            id
+            balance {
+              amount
+              currencyCode
+            }
+            enabled
+            expiresOn
+            lastCharacters
+            maskedCode
+            customer {
+              id
+              email
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch("/apps/YOUR_APP_ROUTE", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      target: "graphql",
+      query,
+      variables: {}
+    }),
+  });
+
+  return await response.json();
+}
+
+/* -----------------------------
+    2. SEND NOTIFICATION MUTATION
+-------------------------------- */
+async function sendGiftCardNotification(giftCardId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerText = "Sending...";
+
+  const mutation = `
+    mutation SendGiftCardNotification {
+      giftCardSendNotificationToCustomer(id: "${giftCardId}") {
+        giftCard {
+          id
+          customer {
+            id
+          }
+        }
+        userErrors {
+          message
+          field
+          code
+        }
+      }
+    }
+  `;
+
+  const response = await fetch("/apps/YOUR_APP_ROUTE", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      target: "graphql",
+      query: mutation,
+      variables: {}
+    }),
+  });
+
+  const data = await response.json();
+  console.log("Send Notification →", data);
+
+  const errors = data?.data?.body?.data?.giftCardSendNotificationToCustomer?.userErrors;
+
+  if (errors && errors.length > 0) {
+    alert("Error: " + errors[0].message);
+    btnElement.disabled = false;
+    btnElement.innerText = "Send Notification";
+    return;
+  }
+
+  alert("Notification sent successfully!");
+  btnElement.innerText = "Sent!";
+}
+
+/* -----------------------------
+    3. RENDER GIFT CARDS GRID
+-------------------------------- */
+function renderGiftCards(giftCards) {
+  const container = document.getElementById("giftCardGrid");
+  container.innerHTML = "";
+
+  if (!giftCards || giftCards.length === 0) {
+    container.innerHTML = "<p>No gift cards found.</p>";
+    return;
+  }
+
+  giftCards.forEach(item => {
+    const gc = item.node;
+
+    const cardHTML = `
+      <div style="
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        background: #fafafa;
+      ">
+        <h3>${gc.maskedCode}</h3>
+        <p><b>Balance:</b> ${gc.balance.amount} ${gc.balance.currencyCode}</p>
+        <p><b>ID:</b> ${gc.id}</p>
+        <button 
+          style="
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #008060;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+          onclick="sendGiftCardNotification('${gc.id}', this)"
+        >
+          Send Notification
+        </button>
+      </div>
+    `;
+
+    container.innerHTML += cardHTML;
+  });
+}
+
+/* -----------------------------
+    4. PAGE LOAD LOGIC
+-------------------------------- */
+document.addEventListener("DOMContentLoaded", async () => {
+  const customerId = "{{ customer.id }}";
+
+  if (!customerId) {
+    document.getElementById("giftCardGrid").innerHTML =
+      "<p>Please log in to view gift cards.</p>";
+    return;
+  }
+
+  const result = await getGiftCardsByCustomer(customerId);
+  console.log("Gift Cards →", result);
+
+  const giftCards = result?.data?.body?.data?.giftCards?.edges || [];
+  renderGiftCards(giftCards);
+});
+</script>
+
 
 
 
