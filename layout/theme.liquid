@@ -381,7 +381,7 @@ async function getGiftCardsByCustomer(customerId) {
     }
   `;
 
-  const response = await fetch("/apps/YOUR_APP_ROUTE", {
+  const response = await fetch("/apps/customerdashboard", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -419,7 +419,7 @@ async function sendGiftCardNotification(giftCardId, btnElement) {
     }
   `;
 
-  const response = await fetch("/apps/YOUR_APP_ROUTE", {
+  const response = await fetch("/apps/customerdashboard", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
