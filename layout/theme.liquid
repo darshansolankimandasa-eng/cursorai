@@ -693,5 +693,43 @@ async function generateImage() {
 }
 </script>
 
+<script>
+async function generateTextAI() {
+    const prompt = document.getElementById("aiPromptInput").value;
+    const status = document.getElementById("aiStatus");
+    const output = document.getElementById("aiTextOutput");
+
+    if (!prompt) {
+        status.textContent = "Please enter a prompt";
+        return;
+    }
+
+    status.textContent = "Generating text...";
+    output.textContent = "";
+
+    try {
+        const response = await fetch("http://localhost:3000/api/generate-text", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            status.textContent = "Done!";
+            output.textContent = data.output;
+        } else {
+            status.textContent = "Error: " + data.error;
+        }
+    } catch (err) {
+        console.error(err);
+        status.textContent = "Request failed";
+    }
+}
+</script>
+
   </body>
 </html>
