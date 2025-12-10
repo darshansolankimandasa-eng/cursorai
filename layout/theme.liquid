@@ -302,7 +302,53 @@
 
 
 
-  
+    <script>
+      async function getGiftCardsByCustomer(customerId) {
+        const query = `
+          query GiftCardsByCustomer {
+            giftCards(first: 10, query: "customer_id:${customerId} status:enabled") {
+              edges {
+                node {
+                  id
+                  balance {
+                    amount
+                    currencyCode
+                  }
+                  enabled
+                  expiresOn
+                  lastCharacters
+                  maskedCode
+                  customer {
+                    id
+                    email
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+      const response = await fetch("/apps/customerdashboard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          target: "graphql",
+          query: query,
+          variables: {}
+        }),
+      });
+
+  const data = await response.json();
+  console.log("Gift Cards →", data);
+  return data;
+}
+
+// Example usage:
+getGiftCardsByCustomer("8631840014490");
+
+    </script>
 
 
 
