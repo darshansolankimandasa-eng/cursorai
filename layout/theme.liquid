@@ -255,6 +255,17 @@
 
     {% sections 'header-group' %}
 
+    <div>
+  <input type="text" id="promptInput" placeholder="Enter prompt..." />
+  <button onclick="generateImage()">Generate Image</button>
+
+  <div id="result">
+    <p id="status"></p>
+    <img id="generatedImage" style="max-width:300px; display:none;" />
+  </div>
+</div>
+
+
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
     </main>
@@ -613,7 +624,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     </script>
     {% endcomment %}
 
-
+{% comment %} 
     <script>
 async function sendPromptToServer(promptText) {
   const response = await fetch("http://localhost:3000/api/testing", {
@@ -632,6 +643,38 @@ async function sendPromptToServer(promptText) {
 
 // Example:
 sendPromptToServer("Generate a futuristic car image");
+</script> {% endcomment %}
+
+
+<script>
+async function generateImage() {
+  const prompt = document.getElementById('promptInput').value;
+  const status = document.getElementById('status');
+  const imageElement = document.getElementById('generatedImage');
+
+  status.textContent = "Generating image...";
+  imageElement.style.display = "none";
+
+  try {
+    const response = await fetch("http://localhost:3000/api/generate-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      status.textContent = "Image generated!";
+      imageElement.src = data.imageUrl;
+      imageElement.style.display = "block"; // show image
+    } else {
+      status.textContent = "Error: " + data.error;
+    }
+  } catch (err) {
+    status.textContent = "Server error!";
+  }
+}
 </script>
 
   </body>
