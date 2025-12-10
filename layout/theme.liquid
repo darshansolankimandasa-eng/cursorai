@@ -264,7 +264,23 @@
     <img id="generatedImage" style="max-width:300px; display:none;" />
   </div>
 </div>
+<div style="padding: 10px;">
+  <input 
+    id="aiPromptInput" 
+    type="text" 
+    placeholder="Enter your prompt..." 
+    style="width: 300px; padding: 8px;" 
+  />
 
+  <button 
+    onclick="generateTextAI()" 
+    style="padding: 8px 12px; margin-left: 5px;">
+    Generate Text
+  </button>
+
+  <p id="aiStatus" style="margin-top: 15px; color: gray;"></p>
+  <div id="aiTextOutput" style="margin-top: 15px; font-size: 16px;"></div>
+</div>
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
