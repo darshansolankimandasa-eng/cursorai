@@ -255,7 +255,7 @@
 
     {% sections 'header-group' %}
 
-    <div>
+    {% comment %} <div>
   <input type="text" id="promptInput" placeholder="Enter prompt..." />
   <button onclick="generateImage()">Generate Image</button>
 
@@ -280,7 +280,7 @@
 
   <p id="aiStatus" style="margin-top: 15px; color: gray;"></p>
   <div id="aiTextOutput" style="margin-top: 15px; font-size: 16px;"></div>
-</div>
+</div> {% endcomment %}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
@@ -662,7 +662,7 @@ sendPromptToServer("Generate a futuristic car image");
 </script> {% endcomment %}
 
 
-<script>
+{% comment %} <script>
 async function generateImage() {
   const prompt = document.getElementById('promptInput').value;
   const status = document.getElementById('status');
@@ -729,7 +729,7 @@ async function generateTextAI() {
         status.textContent = "Request failed";
     }
 }
-</script>
+</script> {% endcomment %}
 
   </body>
 </html>
