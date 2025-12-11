@@ -1,0 +1,300 @@
+{% schema %}
+{
+  "name": "Shopify AI Chat Assistant",
+  "tag": "section",
+  "class": "shopify-ai-chat-section",
+  "settings": []
+}
+{% endschema %}
+
+<div id="shopify-ai-chat-section">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #96e6a1 0%, #56ab2f 100%);
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #96e6a1 0%, #56ab2f 100%);
+                color: white;
+                padding: 25px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                opacity: 0.9;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section {
+                background: #f8f9fa;
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .section h2 {
+                color: #56ab2f;
+                margin-bottom: 15px;
+                font-size: 1.3em;
+            }
+
+            .test-buttons {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            button {
+                background: linear-gradient(135deg, #96e6a1 0%, #56ab2f 100%);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 0.95em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+            }
+
+            button:active {
+                transform: translateY(0);
+            }
+
+            .chat-container {
+                background: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                height: 400px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .message {
+                padding: 12px 16px;
+                border-radius: 10px;
+                max-width: 80%;
+                word-wrap: break-word;
+                animation: slideIn 0.3s ease;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .message.user {
+                background: linear-gradient(135deg, #96e6a1 0%, #56ab2f 100%);
+                color: white;
+                align-self: flex-end;
+                margin-left: auto;
+            }
+
+            .message.assistant {
+                background: #f0f0f0;
+                color: #333;
+                align-self: flex-start;
+            }
+
+            .message.system {
+                background: #fff3cd;
+                color: #856404;
+                align-self: center;
+                font-size: 0.85em;
+                text-align: center;
+            }
+
+            .chat-input-container {
+                display: flex;
+                gap: 10px;
+                padding: 15px;
+                border-top: 2px solid #e0e0e0;
+            }
+
+            input[type="text"] {
+                flex: 1;
+                padding: 12px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1em;
+            }
+
+            input:focus {
+                border-color: #56ab2f;
+                outline: none;
+            }
+
+            .output {
+                background: #f8f9fa;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 15px;
+                min-height: 60px;
+                max-height: 300px;
+                overflow-y: auto;
+                font-size: 0.9em;
+            }
+
+            .status {
+                padding: 10px;
+                border-radius: 8px;
+                font-weight: 600;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .status.loading {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .status.success {
+                background: #e8f5e9;
+                color: #388e3c;
+            }
+
+            .status.error {
+                background: #ffebee;
+                color: #d32f2f;
+            }
+        </style>
+
+        <div class="container">
+            <div class="header">
+                <h1>🛍️ Shopify AI Chat Assistant</h1>
+                <p>Integrated with Shopify MCP</p>
+            </div>
+
+            <div class="content">
+                <div class="section">
+                    <h2>⚙️ Configuration</h2>
+                    <div class="code">
+                        SHOPIFY_STORE_NAME=your-store-name<br>
+                        SHOPIFY_ACCESS_TOKEN=your-admin-token<br>
+                        OPENAI_API_KEY=your-openai-key
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>💬 Live Chat</h2>
+
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message system">
+                                💡 AI can fetch real-time Shopify data and remember your last 10 messages
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <input id="chatInput" type="text" placeholder="Ask about products, orders, or anything..." />
+                            <button onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+
+                    <div id="chatStatus"></div>
+                </div>
+
+                <div class="section">
+                    <h2>📊 Response Details</h2>
+                    <div id="responseDetails" class="output">Send a message...</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const userId = 'user_' + Date.now();
+
+            async function sendMessage() {
+                const input = document.getElementById('chatInput');
+                const prompt = input.value.trim();
+
+                if (!prompt) return;
+
+                const messages = document.getElementById('chatMessages');
+                const status = document.getElementById('chatStatus');
+                const details = document.getElementById('responseDetails');
+
+                messages.innerHTML += `<div class="message user">${prompt}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+                input.value = "";
+
+                status.innerHTML = `<div class="status loading">🤖 AI thinking...</div>`;
+
+                try {
+                    const response = await fetch("http://localhost:3000/api/chat-shopify", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ prompt, userId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        messages.innerHTML += `<div class="message assistant">${data.output}</div>`;
+                        messages.scrollTop = messages.scrollHeight;
+
+                        status.innerHTML = `<div class="status success">AI responded successfully</div>`;
+
+                        details.innerHTML =
+                            `<strong>Iterations:</strong> ${data.iterations}<br>
+                            <strong>Tool Calls Used:</strong> ${data.toolCallsUsed}<br>
+                            <strong>History Length:</strong> ${data.historyLength}<br>`;
+                    } else {
+                        status.innerHTML = `<div class="status error">❌ ${data.error}</div>`;
+                    }
+                } catch (err) {
+                    status.innerHTML = `<div class="status error">❌ ${err.message}</div>`;
+                }
+            }
+
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === "Enter") sendMessage();
+            });
+        </script>
+</div>
